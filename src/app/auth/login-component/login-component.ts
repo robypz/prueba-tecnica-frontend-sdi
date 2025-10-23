@@ -20,7 +20,9 @@ export class LoginComponent {
 
   constructor(){
     effect(() => {
-      console.log(this.user);
+      if (this._user()) {
+
+      }
     })
   }
 
