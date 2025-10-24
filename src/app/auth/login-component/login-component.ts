@@ -1,7 +1,8 @@
 import { Component, computed, effect, inject } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../shared/auth-service';
 import { User } from '../shared/user.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login-component',
@@ -12,28 +13,27 @@ import { User } from '../shared/user.model';
 export class LoginComponent {
   private authService = inject(AuthService);
   private _user = computed(() => this.authService.user());
+  private readonly router = inject(Router);
 
 
-  public get user() : User {
+  public get user(): User {
     return this._user() as User;
   }
 
-  constructor(){
+  constructor() {
     effect(() => {
       if (this._user()) {
-
+        this.router.navigate(['/sessions/calendar']);
       }
     })
   }
 
-
-
   loginForm = new FormGroup({
-    email: new FormControl(''),
-    password: new FormControl(''),
+    email: new FormControl('', [Validators.required, Validators.email]),
+    password: new FormControl('', [Validators.required, Validators.minLength(8)]),
   });
 
-  onSubmit(){
+  onSubmit() {
     this.authService.login(this.loginForm.value as User);
   }
 }

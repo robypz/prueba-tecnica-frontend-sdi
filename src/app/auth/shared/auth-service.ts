@@ -6,10 +6,21 @@ import { User } from './user.model';
 })
 export class AuthService {
   private _user = signal<User | null>(null);
-
+  private _token = signal<string | null>(null);
 
   public get user(): WritableSignal<User | null> {
     return this._user;
+  }
+
+    public get token(): WritableSignal<string | null> {
+    return this._token;
+  }
+
+  constructor(){
+    if (localStorage.getItem('user') && localStorage.getItem('token')) {
+      this._user.set(JSON.parse(localStorage.getItem('user')!));
+      this._token.set(localStorage.getItem('token')!);
+    }
   }
 
   public login(user: User): void {
