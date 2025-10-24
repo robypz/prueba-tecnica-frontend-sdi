@@ -13,7 +13,8 @@ import {
   CalendarDayViewComponent, CalendarEvent,
   CalendarView,
   CalendarDatePipe,
-  CalendarDateFormatter
+  CalendarDateFormatter,
+  CalendarEventAction
 } from 'angular-calendar'
 import {
   isSameDay,
@@ -63,11 +64,20 @@ export class CalendarComponent {
     });
   }
 
+  //calendar
   readonly CalendarView = CalendarView;
   viewDate = new Date();
-
   view: CalendarView = CalendarView.Month;
-  locale: string = 'es';
+  actions: CalendarEventAction[] = [
+    {
+      label: '<span class="text-white bg-red-500 rounded-full p-2">Eliminar</span>',
+      a11yLabel: 'Delete',
+      onClick: ({ event }: { event: CalendarEvent }): void => {
+        this.events = this.events.filter((iEvent) => iEvent !== event);
+        this.handleEvent('Deleted', event);
+      },
+    },
+  ];
   //map sessions on a array of calendarevents
   events: CalendarEvent[] = this.sessions.map(
     (session: Session) => {
@@ -78,15 +88,7 @@ export class CalendarComponent {
           primary: '#1e90ff',
           secondary: '#D1E8FF',
         },
-        actions: [
-          {
-            label: '<i class="fas fa-fw fa-trash-alt"></i>',
-            onClick: ({ event }: { event: CalendarEvent }): void => {
-              this.events = this.events.filter((iEvent) => iEvent !== event);
-              console.log('Event deleted', event);
-            },
-          },
-        ],
+        actions: this.actions
       };
     }
   )
@@ -112,5 +114,11 @@ export class CalendarComponent {
       }
       this.viewDate = date;
     }
+  }
+
+  handleEvent(action: string, event: CalendarEvent): void {
+    console.log(action);
+    /*this.modalData = { event, action };
+    this.modal.open(this.modalContent, { size: 'lg' });*/
   }
 }
