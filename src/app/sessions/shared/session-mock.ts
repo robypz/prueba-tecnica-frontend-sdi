@@ -19,7 +19,7 @@ export class SessionMock {
         category: 'Teatro',
         city: 'Logroño',
         date: '2025-11-01T20:00:00',
-        status: 'publicado'
+        status: 'borrador'
       },
       {
         id: crypto.randomUUID(),
@@ -28,7 +28,7 @@ export class SessionMock {
         category: 'Cultural',
         city: 'Logroño',
         date: '2025-11-04T11:00:00',
-        status: 'publicado'
+        status: 'borrador'
       },
       {
         id: crypto.randomUUID(),
@@ -64,7 +64,7 @@ export class SessionMock {
         category: 'Formación',
         city: 'Nájera',
         date: '2025-11-28T16:00:00',
-        status: 'publicado'
+        status: 'borrador'
       }
     ];
 

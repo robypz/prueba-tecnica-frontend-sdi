@@ -23,6 +23,7 @@ import {
 import { adapterFactory, } from 'angular-calendar/date-adapters/date-fns';
 import { Session } from '../shared/session.model';
 import { CustomDateFormatter } from './custom-date-formatter.privider';
+import { AuthService } from '../../auth/shared/auth-service';
 
 @Component({
   selector: 'app-calendar-component',
@@ -53,6 +54,8 @@ import { CustomDateFormatter } from './custom-date-formatter.privider';
 export class CalendarComponent {
   private sessionService = inject(SessionService);
   private _sessions = computed(() => this.sessionService.sessions());
+  private authService = inject(AuthService);
+
 
   get sessions() {
     return this._sessions();
@@ -88,7 +91,7 @@ export class CalendarComponent {
           primary: '#1e90ff',
           secondary: '#D1E8FF',
         },
-        actions: this.actions
+        actions: this.authService.hasRole('admin') ? this.actions : [],
       };
     }
   )

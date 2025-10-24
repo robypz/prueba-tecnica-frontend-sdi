@@ -19,6 +19,14 @@ export class SessionService {
     }
   }
 
+
+
+
+  public create(session: Session): void {
+    this._sessions.update(sessions => [...sessions, session]);
+    localStorage.setItem('sessions', JSON.stringify(this._sessions()));
+  }
+
   public destroy(id: string): void {
     this._sessions.update(sessions => sessions.filter(session => session.id !== id));
     localStorage.setItem('sessions', JSON.stringify(this._sessions()));

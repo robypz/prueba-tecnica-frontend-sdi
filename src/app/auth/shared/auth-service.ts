@@ -21,6 +21,7 @@ export class AuthService {
       this._user.set(JSON.parse(localStorage.getItem('user')!));
       this._token.set(localStorage.getItem('token')!);
     }
+    console.log(this._user());
   }
 
   public login(user: User): void {
@@ -41,6 +42,10 @@ export class AuthService {
 
   public logout(): void {
     this.user.set(null);
+  }
+
+  public hasRole(role: string): boolean {
+    return this._user()?.role === role;
   }
 
 }
