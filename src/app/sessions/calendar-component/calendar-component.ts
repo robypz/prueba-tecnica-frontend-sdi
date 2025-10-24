@@ -1,8 +1,7 @@
-import { Component, computed, effect, inject, DOCUMENT, ViewChild, TemplateRef, viewChild } from '@angular/core';
+import { Component, computed, effect, inject, DOCUMENT } from '@angular/core';
 import { MenuComponent } from "../../shared/components/menu-component/menu-component";
 import { SessionService } from '../shared/session-service';
 import { SessionCreateComponent } from "../session-create-component/session-create-component";
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import {
   DateAdapter,
   provideCalendar,
@@ -19,11 +18,10 @@ import {
 import {
   isSameDay,
   isSameMonth,
-} from 'date-fns';
+} from 'date-fns';;
 import { adapterFactory, } from 'angular-calendar/date-adapters/date-fns';
 import { Session } from '../shared/session.model';
 import { CustomDateFormatter } from './custom-date-formatter.privider';
-import { JsonPipe } from '@angular/common';
 
 @Component({
   selector: 'app-calendar-component',
@@ -35,8 +33,7 @@ import { JsonPipe } from '@angular/common';
     CalendarMonthViewComponent,
     CalendarWeekViewComponent,
     CalendarDayViewComponent,
-    CalendarDatePipe,
-    JsonPipe
+    CalendarDatePipe
   ],
   providers: [
     provideCalendar({
@@ -53,7 +50,6 @@ import { JsonPipe } from '@angular/common';
   styleUrl: './calendar-component.scss'
 })
 export class CalendarComponent {
-   @ViewChild('modalContent', { static: true }) modalContent: TemplateRef<any> | undefined;
   private sessionService = inject(SessionService);
   private _sessions = computed(() => this.sessionService.sessions());
 
@@ -116,15 +112,5 @@ export class CalendarComponent {
       }
       this.viewDate = date;
     }
-  }
-
-  private modal = inject(NgbModal);
-  modalData: {
-    action: string;
-    event: CalendarEvent;
-  } | undefined;
-  handleEvent(action: string, event: CalendarEvent): void {
-    this.modalData = { event, action };
-    this.modal.open(this.modalContent, { size: 'lg' });
   }
 }
