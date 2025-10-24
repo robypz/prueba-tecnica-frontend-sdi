@@ -6,6 +6,6 @@ import { authGuard } from './core/guards/auth-guard';
 export const routes: Routes = [
   {path: '', redirectTo: 'login', pathMatch: 'full'},
   {path: 'login',component: LoginComponent},
-  {path: 'sessions/calendar',component: CalendarComponent, canActivate: [authGuard]},
+  {path: 'sessions/calendar',component: CalendarComponent,canActivate: [authGuard]},
 
 ];

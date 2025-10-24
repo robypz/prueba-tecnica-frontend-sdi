@@ -12,11 +12,11 @@ export class AuthService {
     return this._user;
   }
 
-    public get token(): WritableSignal<string | null> {
+  public get token(): WritableSignal<string | null> {
     return this._token;
   }
 
-  constructor(){
+  constructor() {
     if (localStorage.getItem('user') && localStorage.getItem('token')) {
       this._user.set(JSON.parse(localStorage.getItem('user')!));
       this._token.set(localStorage.getItem('token')!);
@@ -47,6 +47,14 @@ export class AuthService {
 
   public hasRole(role: string): boolean {
     return this._user()?.role === role;
+  }
+
+  public auth () : boolean{
+    if (localStorage.getItem('user') && localStorage.getItem('token')) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
 }
