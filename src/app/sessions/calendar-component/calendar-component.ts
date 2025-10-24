@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, DOCUMENT } from '@angular/core';
+import { Component, computed, effect, inject, DOCUMENT, model, signal } from '@angular/core';
 import { MenuComponent } from "../../shared/components/menu-component/menu-component";
 import { SessionService } from '../shared/session-service';
 import { SessionCreateComponent } from "../session-create-component/session-create-component";
@@ -23,6 +23,7 @@ import {
 import { adapterFactory, } from 'angular-calendar/date-adapters/date-fns';
 import { Session } from '../shared/session.model';
 import { AuthService } from '../../auth/shared/auth-service';
+import { SessionDetailsComponent } from "../session-details-component/session-details-component";
 
 @Component({
   selector: 'app-calendar-component',
@@ -34,8 +35,7 @@ import { AuthService } from '../../auth/shared/auth-service';
     CalendarMonthViewComponent,
     CalendarWeekViewComponent,
     CalendarDayViewComponent,
-    CalendarDatePipe
-  ],
+    CalendarDatePipe, SessionDetailsComponent],
   providers: [
     provideCalendar({
       provide: DateAdapter,
@@ -49,17 +49,25 @@ export class CalendarComponent {
   private sessionService = inject(SessionService);
   private _sessions = computed(() => this.sessionService.sessions());
   private authService = inject(AuthService);
-
+  private _id = signal<string|null>(null);
 
   get sessions() {
     return this._sessions();
   }
+
+  get id() {
+    return this._id() as string;
+  }
+
+
+
 
   constructor() {
     effect(() => {
       this.events = this.sessions.map(
         (session: Session) => {
           return {
+            id: session.id,
             start: new Date(session.date),
             title: session.title,
             color: {
@@ -126,6 +134,8 @@ export class CalendarComponent {
   }
 
   handleEvent(action: string, event: CalendarEvent): void {
-    console.log(action);
+    if (action=="Clicked") {
+      this._id.set(event.id as string);
+    }
   }
 }

@@ -7,7 +7,11 @@ import { Session } from './session.model';
 })
 export class SessionService {
   private _sessions = signal<Session[]>([]);
+  private _session = signal<Session|null>(null);
 
+  public get session() : WritableSignal<Session|null> {
+    return this._session;
+  }
 
   public get sessions() : WritableSignal<Session[]> {
     return this._sessions;
@@ -17,6 +21,10 @@ export class SessionService {
     if(new SessionMock()){
       this._sessions.set(JSON.parse(localStorage.getItem('sessions')!));
     }
+  }
+
+  public show(id: string): void {
+    this._session.set(this._sessions().find(session => session.id === id)!);
   }
 
   public create(session: Session): void {
