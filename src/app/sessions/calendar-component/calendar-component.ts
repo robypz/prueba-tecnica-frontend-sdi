@@ -24,6 +24,7 @@ import { adapterFactory, } from 'angular-calendar/date-adapters/date-fns';
 import { Session } from '../shared/session.model';
 import { AuthService } from '../../auth/shared/auth-service';
 import { SessionDetailsComponent } from "../session-details-component/session-details-component";
+import { SessionEditComponent } from "../session-edit-component/session-edit-component";
 
 @Component({
   selector: 'app-calendar-component',
@@ -35,7 +36,7 @@ import { SessionDetailsComponent } from "../session-details-component/session-de
     CalendarMonthViewComponent,
     CalendarWeekViewComponent,
     CalendarDayViewComponent,
-    CalendarDatePipe, SessionDetailsComponent],
+    CalendarDatePipe, SessionDetailsComponent, SessionEditComponent],
   providers: [
     provideCalendar({
       provide: DateAdapter,
@@ -49,7 +50,13 @@ export class CalendarComponent {
   private sessionService = inject(SessionService);
   private _sessions = computed(() => this.sessionService.sessions());
   private authService = inject(AuthService);
-  private _id = signal<string|null>(null);
+  private _id = signal<string | null>(null);
+  public _session = signal<Session | null>(null);
+
+  get session() {
+    return this._session() as Session;
+  }
+
 
   get sessions() {
     return this._sessions();
@@ -58,9 +65,6 @@ export class CalendarComponent {
   get id() {
     return this._id() as string;
   }
-
-
-
 
   constructor() {
     effect(() => {
@@ -87,7 +91,14 @@ export class CalendarComponent {
   view: CalendarView = CalendarView.Month;
   actions: CalendarEventAction[] = [
     {
-      label: '<span class="text-white bg-red-500 rounded-full p-1 text-xs">Eliminar</span>',
+      label: '<span class="text-white bg-yellow-500 rounded-full p-1 text-xs mx-1">Editar</span>',
+      a11yLabel: 'Edit',
+      onClick: ({ event }: { event: CalendarEvent }): void => {
+        this.handleEvent('Edited', event);
+      },
+    },
+    {
+      label: '<span class="text-white bg-red-500 rounded-full p-1 text-xs mx-1">Eliminar</span>',
       a11yLabel: 'Delete',
       onClick: ({ event }: { event: CalendarEvent }): void => {
         this.events = this.events.filter((iEvent) => iEvent !== event);
@@ -134,8 +145,11 @@ export class CalendarComponent {
   }
 
   handleEvent(action: string, event: CalendarEvent): void {
-    if (action=="Clicked") {
+    if (action == "Clicked") {
       this._id.set(event.id as string);
+    }
+    else if (action == "Edited") {
+      this._session.set(this._sessions().find(session => session.id === event.id as string)!);
     }
   }
 }
