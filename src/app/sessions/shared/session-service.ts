@@ -23,7 +23,7 @@ export class SessionService {
     }
   }
 
-  public update (session: Session, id: string){
+  public update (session: Session,id: string){
     this._sessions.update(sessions => sessions.map(s => s.id === id ? session : s));
     localStorage.setItem('sessions', JSON.stringify(this._sessions()));
     this._session.update(() => session);
