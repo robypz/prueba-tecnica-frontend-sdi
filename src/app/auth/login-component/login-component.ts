@@ -13,7 +13,7 @@ import { Router } from '@angular/router';
 export class LoginComponent {
   private authService = inject(AuthService);
   private _user = computed(() => this.authService.user());
-  private readonly router = inject(Router);
+  private router = inject(Router);
 
 
   public get user(): User {
@@ -22,8 +22,8 @@ export class LoginComponent {
 
   constructor() {
     effect(() => {
-      if (this._user()) {
-        this.router.navigate(['/sessions/calendar']);
+      if (this.user) {
+        this.router.navigate(['sessions/calendar']);
       }
     })
   }
