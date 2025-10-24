@@ -22,7 +22,6 @@ import {
 } from 'date-fns';;
 import { adapterFactory, } from 'angular-calendar/date-adapters/date-fns';
 import { Session } from '../shared/session.model';
-import { CustomDateFormatter } from './custom-date-formatter.privider';
 import { AuthService } from '../../auth/shared/auth-service';
 
 @Component({
@@ -41,12 +40,7 @@ import { AuthService } from '../../auth/shared/auth-service';
     provideCalendar({
       provide: DateAdapter,
       useFactory: adapterFactory,
-    }, {
-      dateFormatter: {
-        provide: CalendarDateFormatter,
-        useClass: CustomDateFormatter,
-      },
-    },),
+    }),
   ],
   templateUrl: './calendar-component.html',
   styleUrl: './calendar-component.scss'
@@ -63,7 +57,19 @@ export class CalendarComponent {
 
   constructor() {
     effect(() => {
-      console.log(this.sessions);
+      this.events = this.sessions.map(
+        (session: Session) => {
+          return {
+            start: new Date(session.date),
+            title: session.title,
+            color: {
+              primary: '#1e90ff',
+              secondary: '#D1E8FF',
+            },
+            actions: this.authService.hasRole('admin') ? this.actions : [],
+          };
+        }
+      )
     });
   }
 
@@ -73,7 +79,7 @@ export class CalendarComponent {
   view: CalendarView = CalendarView.Month;
   actions: CalendarEventAction[] = [
     {
-      label: '<span class="text-white bg-red-500 rounded-full p-2">Eliminar</span>',
+      label: '<span class="text-white bg-red-500 rounded-full p-1 text-xs">Eliminar</span>',
       a11yLabel: 'Delete',
       onClick: ({ event }: { event: CalendarEvent }): void => {
         this.events = this.events.filter((iEvent) => iEvent !== event);
@@ -121,7 +127,5 @@ export class CalendarComponent {
 
   handleEvent(action: string, event: CalendarEvent): void {
     console.log(action);
-    /*this.modalData = { event, action };
-    this.modal.open(this.modalContent, { size: 'lg' });*/
   }
 }
